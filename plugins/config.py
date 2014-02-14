@@ -1,0 +1,104 @@
+#-*- coding:utf-8 -*-
+#
+# Copyright 2013 cold
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#    http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# 是否输出调试信息
+DEBUG = True
+
+# 是否显示详细HTTP跟踪信息
+TRACE = False
+
+# QQ 号码
+QQ = 1234
+
+# QQ 密码
+QQ_PWD = ""
+QQ_GROUP_NICK=u'BSD-小坏蛋 '
+
+# 日志路径
+LOG_PATH = "log.log"
+
+# 日志最大大小
+LOG_MAX_SIZE = 5 * 1024 * 1024  # 5M
+
+# 日志最大备份数目
+LOG_BACKUP_COUNT = 10
+
+# 自动同意好友申请
+# 需要将身份验证设置为"需要验证信息"
+# 好友备注名将自动改为好友的QQ号
+AUTO_ACCEPT = True
+
+# 下面是有道辞典需要的api, 可以到下面网站申请一个key和keyfrom
+# http://fanyi.youdao.com/openapi
+YOUDAO_KEY = test
+
+YOUDAO_KEYFROM = "testqq"
+
+
+# 允许机器人发送消息的最大长度
+# 此配置避免结果过长在群内造成刷屏
+MAX_LENGTH = 150
+
+# 机器人接收内容超过这个长度将贴到网上
+MAX_RECEIVER_LENGTH = 300
+
+# 是否上传验证图片, False则存在本地
+UPLOAD_CHECKIMG = False
+
+# 是否启动SimSimi应答
+SimSimi_Enabled = True
+
+# SimSimi代理防止ip被官方封掉
+SimSimi_Proxy = ("host", "port")
+
+# 需要改动QQ某些东西, 比如设置签名, 所要提供的密码
+Set_Password = "set_password"
+
+# 两条消息最小时间间隔, bot 连续发送消息, 如果频率过快会被tx过滤掉
+# 设置一个时间间隔来确保消息被正常投递, 安全值是0.5, 其他更小的值未测试
+MESSAGE_INTERVAL = 0.5
+
+# 是否启用一个HTTP服务器来输入验证码
+# 启用这个将按照下面的配置启用一个HTTP Server提供输入验证码的接口
+HTTP_CHECKIMG = False
+
+# HTTP 验证码服务器监听地址
+HTTP_LISTEN = "0.0.0.0"
+
+# HTTP 验证码服务器监听端口
+HTTP_PORT = 8000
+
+
+# 是否启用提醒(当程序重启需要验证码时发送邮件通知)
+# 邮箱可以用类似126的手机号邮箱会及时发送短信提醒
+EMAIL_NOTICE = False
+
+# 发送邮件使用SMTP方式, 
+# 指定SMTP地址
+SMTP_HOST = "smtp.126.com"
+
+# 指定发件账号
+SMTP_ACCOUNT = "account"
+
+# 指定发件密码
+SMTP_PASSWORD = "aa"
+
+# 指定接收提醒的邮箱
+# 为了及时收到提醒, 请使用可以连通手机的邮箱
+EMAIL = "11111111@126.com"
+PLUGINS_DIR="../"
+SmartRobot_Enabled=True
