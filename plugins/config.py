@@ -44,7 +44,7 @@ AUTO_ACCEPT = True
 
 # 下面是有道辞典需要的api, 可以到下面网站申请一个key和keyfrom
 # http://fanyi.youdao.com/openapi
-YOUDAO_KEY = test
+YOUDAO_KEY = "test"
 
 YOUDAO_KEYFROM = "testqq"
 
