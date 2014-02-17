@@ -34,6 +34,7 @@ class LangPlugin(BasePlugin):
             self._inputs=content[inputs_pos:args_pos][len('inputs:'):].strip()
             self._args=content[args_pos:stdinput_pos][len('args:'):].strip()
             self._stdinput=content[stdinput_pos:-1][len('stdinput:'):].strip()
+            self._header=''
             
             print 'lang_pos:',lang_pos,'code_pos:',code_pos,'inputs_pos:',inputs_pos,'args_pos:',args_pos,'stdinput_pos:',stdinput_pos
             print 'lang:',self._lang
@@ -48,11 +49,26 @@ class LangPlugin(BasePlugin):
     def handle_message(self, callback):
         params = {"args":self._args, "code":self._code.encode("utf-8"),
                   "inputs":self._stdinput, "lang": self._lang, "stdinput":self._stdinput}
+        if self._lang in ['c','c++','c++11','c++0x','csharp','asm','ada','befunge','c99','cobol','cpp', \
+                          'd','sdcc','erlang','fortran','fsharp','haskell','icon','ilasm','intercal',\
+                          'java','mozart','nimrod','objc','ocaml','pascal','"pawn','qbasic', \
+                          'rust','scala','simula','vb.net','verilog']:
+            params['header']=''
+            params['support']=''
+            params['util']=''
+            print params
+            self.url = "http://www.compileonline.com/compile_new.php"
+            
+            
         def read(resp):
+            body=resp.body
+            if len(resp.body)>400:
+                body=resp.body[0:400]
             try:
-                logger.info(u"Lisp request success, result: {0}".format(resp.body))
+                logger.info(u"Lisp request success, result: {0}".format(body))
             except Exception,e:
                 logger.info(u'except:{0}',e)
+
             try:
                 soup = BeautifulSoup(resp.body)
                 pre=soup.find_all('pre')
