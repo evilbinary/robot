@@ -22,7 +22,7 @@ DEBUG = True
 TRACE = False
 
 # QQ 号码
-QQ = 1234
+QQ = "1234"
 
 # QQ 密码
 QQ_PWD = ""
