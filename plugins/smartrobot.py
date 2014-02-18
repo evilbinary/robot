@@ -109,9 +109,13 @@ class Searcher(object):
     #             for d in tabs:
     #                 print 'h',d.get('h3')
                 #self.http.stop()
-                ran=random.randint(0,len(result)-1)
+                ran=0
+                if len(result)>0:
+                    ran=random.randint(0,len(result)-1)
+                data=''
                 print 'self.http.stop',len(result),' rand:',ran
-                data=result[ran]
+                if ran!=0
+                    data=result[ran]
                 if self.send_msg!=None:
                     self.send_msg(data)
             try:
