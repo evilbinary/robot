@@ -60,7 +60,11 @@ class Searcher(object):
                 #print(self.http.cookie)
                 #print 'body:',response.body
                 #print 'error',response.error
-                soup = BeautifulSoup(response.body)
+                body=response.body
+                
+                if len(body)<=10:
+                    return
+                soup = BeautifulSoup(body,'html5lib')
                 
                 #print(soup.prettify())
                 #for link in soup.find_all('a'):
@@ -73,7 +77,7 @@ class Searcher(object):
                 print len(tds)
                 for i in range(len(tds)):
                     h3=tds[i].find('h3')
-                    div=tds[i].find_all('div',class_='c-abstract')
+                    div=tds[i].find_all('div',attrs={'class':'c-abstract'})
                     if h3!=None:
                         print i,'h3:',h3.get_text()
                         for d in div:
@@ -83,7 +87,7 @@ class Searcher(object):
                     else:
                         print i,'no:',tds[i].get_text()
                 '''find baike'''
-                tds=soup.find_all('div',class_='result-op c-container xpath-log')
+                tds=soup.find_all('div',attrs={'class':'result-op c-container xpath-log'})
                 print type(tds)
                 print len(tds)
                 for i in range(len(tds)):
@@ -111,12 +115,12 @@ class Searcher(object):
     #                 print 'h',d.get('h3')
                 #self.http.stop()
                 ran=0
+                data='.....'
                 if len(result)>0:
                     ran=random.randint(0,len(result)-1)
-                data=''
-                print 'self.http.stop',len(result),' rand:',ran
-                if ran!=0
                     data=result[ran]
+                print 'self.http.stop',len(result),' rand:',ran
+                print 'send:',data
                 if self.send_msg!=None:
                     self.send_msg(data)
             try:
