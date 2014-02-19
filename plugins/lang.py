@@ -47,6 +47,7 @@ class LangPlugin(BasePlugin):
         return False
 
     def handle_message(self, callback):
+    	url = "http://www.compileonline.com/execute_new.php"
         params = {"args":self._args, "code":self._code.encode("utf-8"),
                   "inputs":self._stdinput, "lang": self._lang, "stdinput":self._stdinput}
         if self._lang in ['c','c++','c++11','c++0x','csharp','asm','ada','befunge','c99','cobol','cpp', \
