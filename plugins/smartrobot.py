@@ -25,7 +25,7 @@ class Searcher(object):
         #self.http.debug=True
         self.result=[]
         self.statment=[]
-        self.helpkeyword=['?',u'怎么',u'什么',u'鸭子','ee',u'好了','YY','yy',u'神马',u'啊',u'？',u'是么']
+        self.helpkeyword=['?',u'怎么',u'什么',u'鸭子','ee',u'好了','YY','yy',u'神马',u'啊',u'？',u'是么',u'依依',u'EE',u'BSD鸭子']
         pass
     def parse(self,content):
         self.statment.append(content.split('?'))
@@ -67,7 +67,8 @@ class Searcher(object):
                 #    print(link.get('href'))
                 #print(soup.get_text())
                 '''find normal'''
-                tds=soup.find_all('td',class_='c-default')
+                #tds=soup.find_all('td',class_='c-default') #why no work in linux i dont know why ,who can answer?
+                tds=soup.find_all('td',attrs={'class':'c-default'})
                 print type(tds)
                 print len(tds)
                 for i in range(len(tds)):
