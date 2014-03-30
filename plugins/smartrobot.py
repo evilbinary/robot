@@ -64,7 +64,8 @@ class Searcher(object):
                 
                 if len(body)<=10:
                     return
-                soup = BeautifulSoup(body,'html5lib')
+                #soup = BeautifulSoup(body,'html5lib') #do not enable ,'html5lib'
+                soup = BeautifulSoup(body)
                 
                 #print(soup.prettify())
                 #for link in soup.find_all('a'):
