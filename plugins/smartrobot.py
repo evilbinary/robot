@@ -14,9 +14,12 @@ from bs4 import BeautifulSoup
 import random
 
 from tornadohttpclient import TornadoHTTPClient
-import sys 
-reload(sys) 
-sys.setdefaultencoding('utf8')
+try:
+    import sys 
+    reload(sys) 
+    sys.setdefaultencoding('utf8')
+except Exception,e:
+                print 'except',e
 
 class Searcher(object):
     
@@ -25,7 +28,7 @@ class Searcher(object):
         #self.http.debug=True
         self.result=[]
         self.statment=[]
-        self.helpkeyword=['?',u'怎么',u'什么',u'鸭子','ee',u'好了','YY','yy',u'神马',u'啊',u'？',u'是么',u'依依',u'EE',u'BSD鸭子']
+        self.helpkeyword=['?',u'怎么',u'什么',u'鸭子','ee',u'好了','YY','yy',u'神马',u'啊',u'？',u'是么',u'依依',u'EE',u'BSD鸭子',u'能不能',u'多少',u'么']
         pass
     def parse(self,content):
         self.statment.append(content.split('?'))
@@ -35,7 +38,7 @@ class Searcher(object):
         for c in self.statment:
             t=''.join(c)
             print 'statment:',t
-            self.result.append(self.baidu_search(t))
+            self.result.append(self.baidu_know_search(t))
             print 'after:',self.result
         print 'count:',count
         return count
@@ -73,7 +76,7 @@ class Searcher(object):
                 #print(soup.get_text())
                 '''find normal'''
                 #tds=soup.find_all('td',class_='c-default') #why no work in linux i dont know why ,who can answer?
-                tds=soup.find_all('td',attrs={'class':'c-default'})
+                tds=soup.find_all('div',attrs={'class':'result c-container'})
                 print type(tds)
                 print len(tds)
                 for i in range(len(tds)):
@@ -84,7 +87,7 @@ class Searcher(object):
                         for d in div:
                             print i,'txt:',d.get_text()
                             result.append(d.get_text())
-                            
+                             
                     else:
                         print i,'no:',tds[i].get_text()
                 '''find baike'''
@@ -100,6 +103,11 @@ class Searcher(object):
                             print i,'txt:',d.get_text()
                     else:
                         print i,'no:',tds[i].get_text()
+
+#                 '''find new'''
+#                 tds=soup.find_all('div',id='content_left')
+#                 print '======:',len(tds),tds[0].get_text()
+
     #             for td in tds:
     #                 #print td
     #                 h3=td.find('h3')
@@ -123,7 +131,18 @@ class Searcher(object):
                 print 'self.http.stop',len(result),' rand:',ran
                 print 'send:',data
                 if self.send_msg!=None:
-                    self.send_msg(data)
+                    s=data
+                    s=s.lstrip(' ')
+                    s=s.lstrip('最佳答案:')
+                    s=s.lstrip('问题描述:')
+                    s=s.lstrip('最佳答案:')
+                    s=s.lstrip('问题描述:')
+                    s=s.rstrip('最佳答案:')
+                    s=s.rstrip('问题描述:')
+                    s=s.lstrip(' ')
+                    #s=s.split(' ')[0]
+                   
+                    self.send_msg(s)
             try:
                 url="http://www.baidu.com/s?wd="+content
                 self.http.get(url, callback = getdata)
@@ -136,6 +155,91 @@ class Searcher(object):
         except Exception,e:
             print 'except:',e
     
+    def baidu_know_search(self,content):
+        try:
+            print 'baidu_know_search' 
+            result=[]
+            def getdata(response):
+                #print(response.headers)
+                #print(self.http.cookie)
+                #print 'body:',response.body
+                #print 'error',response.error
+                body=response.body
+                
+                if len(body)<=10:
+                    return
+                #soup = BeautifulSoup(body,'html5lib') #do not enable ,'html5lib'
+                soup = BeautifulSoup(body)
+                
+                #print(soup.prettify())
+                #for link in soup.find_all('a'):
+                #    print(link.get('href'))
+                #print(soup.get_text())
+                '''find normal'''
+                #tds=soup.find_all('td',class_='c-default') #why no work in linux i dont know why ,who can answer?
+                dls=soup.find_all('div',attrs={'class':'list'})
+                print type(dls)
+                print len(dls)
+                for i in range(len(dls)):
+                    #answer=dls[i].find('h3')
+                    
+                    answer=dls[i].find_all('dd',attrs={'class':'dd answer'})
+                    print 'type answer:',type(answer)
+                    print 'answer:',answer
+                    if answer!=None:
+                        for d in range(len(answer)):
+                            print 'answer d:',d , answer[d].get_text()
+                            result.append(answer[d].get_text())
+                             
+                    else:
+                        print i,'no:',dls[i].get_text()
+ 
+                
+
+#                 '''find new'''
+#                 tds=soup.find_all('div',id='content_left')
+#                 print '======:',len(tds),tds[0].get_text()
+
+    #             for td in tds:
+    #                 #print td
+    #                 h3=td.find('h3')
+    #                 div=td.find_all('div',class_='c-abstract')
+    #                 if h3!=None:
+    #                     print 'h3:',h3.get_text()
+    #                 for d in div:
+    #                     print 'txt:',d.get_text()
+                #for l in container:
+                #    print l
+                #content_left=container.<div id="content_left">
+    #             tabs=soup.find_all('table',_class='result')
+    #             for d in tabs:
+    #                 print 'h',d.get('h3')
+                #self.http.stop()
+                ran=0
+                data='.....'
+                if len(result)>0:
+                    ran=random.randint(0,len(result)-1)
+                    data=result[ran]
+                print 'self.http.stop',len(result),' rand:',ran
+                print 'send:',data
+                if self.send_msg!=None:
+                    s=data
+                    s=s.lstrip('答：')
+                    #s=s.split(' ')[0]
+                   
+                    self.send_msg(s)
+            try:
+                url="http://zhidao.baidu.com/search?lm=0&rn=10&pn=0&fr=search&ie=utf8&word="+content
+                self.http.get(url, callback = getdata)
+                #self.http.start()
+            except KeyboardInterrupt:
+                print("exiting...")
+            except Exception,e:
+                print 'except',e
+            return result
+        except Exception,e:
+            print 'except:',e
+            
     def find(self,content):
         print 'find '+content
         if self.findKey(content):
@@ -166,13 +270,14 @@ class SmartRobotPlugin(BasePlugin):
         self.searcher.send_msg=self.callback
         pass
     def is_match(self, from_uin, content,type):
+        #print 'from_uin:',from_uin," content:",content," type:",type
         if not getattr(config, "SmartRobot_Enabled", False):
             return False
         else:
             self.searcher = Searcher()
 
 #        print 'is match'
-        if type == "g":
+        if type == "g" or type=="s" or type=="b":
             print 'search'
             if self.searcher.find(content):
                 result=self.searcher.search(content)
@@ -186,14 +291,21 @@ class SmartRobotPlugin(BasePlugin):
         return False
         pass
 if __name__ == "__main__":
- 
+    c=TornadoHTTPClient()
+    #c.start()
     robot=SmartRobotPlugin(None,None,None,None)
     #while True:
-    
-    if robot.is_match(111, 'ee?', 'g')==True:
+  
+    if robot.is_match(111, 'ss?', 'g')==True:
         data=robot.get_result()
         print "data:",data,type(data)
     else:
         print 'no found'
+    c=TornadoHTTPClient()
+    s=Searcher(c)
+    c.start()
+    #s.baidu_search('ss')
+    c.stop()
+#     
     pass
     

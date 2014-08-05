@@ -5,14 +5,19 @@
 #   E-mail  :   wh_linux@126.com
 #   Date    :   14/01/16 11:21:19
 #   Desc    :   插件机制
-#
+#   Modify  :   动态加载插件。rootntsd@gmail.com
 import os
 import inspect
 import logging
 import config
 import sys
+import thread
+import threading
+import time
+import signal
 
 logger = logging.getLogger("plugin")
+
 
 class BasePlugin(object):
     """ 插件基类, 所有插件继承此基类, 并实现 hanlde_message 实例方法
@@ -43,15 +48,39 @@ class BasePlugin(object):
         raise NotImplemented
 
 
+
+class MyThread(threading.Thread):
+        def __init__(self, loader):  
+                threading.Thread.__init__(self)
+                self.loader=loader
+                self.is_run=True
+        def run(self):
+            try:
+                while self.is_run:
+                    try:
+                        self.loader.auto_load_plugins()
+                        time.sleep(6) 
+                    except KeyboardInterrupt:
+                        logger.info("Exiting...Thread")
+                        self.is_run=False
+           
+            except Exception,e:
+                print 'Error',e
+                logger.error(u"Plugin auto load  was encoutered an  error {0}".format(e), exc_info = True)
+         
 class PluginLoader(object):
     plugins = {}
+    plugins_time={}
     def __init__(self, webqq):
         self.current_path = os.path.abspath(os.path.dirname(__file__))
         self.webqq = webqq
-        for m in self.list_modules():
-            mobj = self.import_module(m)
-            if mobj is not None:
-                self.load_class(mobj)
+        self.auto_load_plugins()
+        self.auot_load_thread=MyThread(self)
+        self.auot_load_thread.start()
+#         for m in self.list_modules():
+#             mobj = self.import_module(m)
+#             if mobj is not None:
+#                 self.load_class(mobj)
         logger.info("Load Plugins: {0!r}".format(self.plugins))
 
     def list_modules(self):
@@ -63,19 +92,59 @@ class PluginLoader(object):
     def import_module(self, m):
         try:
             sys.path.append(config.PLUGINS_DIR)
-            return __import__("plugins." + m, fromlist=["plugins"])
+            filename="plugins." + m
+            if sys.modules.has_key(filename):
+                mod = sys.modules[filename]
+                reload(mod)
+                return mod
+            else:
+                return __import__(filename, fromlist=["plugins"])
         except:
             logger.warn("Error was encountered on loading {0}, will ignore it"
                         .format(m), exc_info = True)
             return None
-
+   
+            return None
     def load_class(self, m):
         for key, val in m.__dict__.items():
             if inspect.isclass(val) and issubclass(val, BasePlugin) and \
                val != BasePlugin:
                 self.plugins[key] = val(self.webqq, self.webqq.hub.http,
                                         self.webqq.hub.nickname, logger)
-
+                logger.info("Load Plugins  {0!r}succes!".format(key))
+                
+    def auto_load_plugins(self):
+        for m in self.list_modules():
+            file_name= self.current_path+'/'+m+'.py'
+            if self.plugins_time.has_key(m):
+                #print 'key:',m
+                a=self.plugins_time[m]
+                b=os.stat(file_name)
+                #print 'a:', a.st_atime,' b:',b.st_atime
+                if a==b:
+                    #print 'equ'
+                    pass
+                else:
+                    print 'x',m,b
+                    logger.info("Load Plugins1: {0!r}".format(m))
+                    if os.path.isfile(self.current_path+'/'+m+'.pyc'):
+                        #os.remove(self.current_path+'/'+m+'.pyc')
+                        pass
+                    self.plugins_time[m]=b
+                    mobj = self.import_module(m)
+                    #mobj=self.reload_module(m)
+                    if mobj is not None:
+                        self.load_class(mobj)
+            else:
+                logger.info("Load Plugins: {0!r}".format(m))
+                print "Load Plugins:",m
+                self.plugins_time[m]=os.stat(file_name)
+                mobj = self.import_module(m)
+                if mobj is not None:
+                    self.load_class(mobj)
+#         print 'items:',self.plugins_time.keys()
+        #print 'have nokey:',map(self.plugins_time.has_key,self.plugins.keys())
+        pass
     def dispatch(self, from_uin, content, type, callback):
         """ 调度插件处理消息
         """
@@ -90,7 +159,15 @@ class PluginLoader(object):
                         logger.error(u"Plugin {0} was encoutered an error"
                                      .format(key), exc_info = True)
                     else:
-                        return True
+                        pass #return True
             return False
         except Exception,e:
             logger.error(u"dispatch {0} was encoutered an error",e)
+
+if __name__ == "__main__":
+    print 'test'
+    p=PluginLoader(None)
+    print 'modules:',p.list_modules()
+    print 'plugins:',p.plugins,p.plugins_time
+    
+    pass

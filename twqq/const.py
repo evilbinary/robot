@@ -8,10 +8,10 @@
 #
 
 CHECK_REFERER = "https://ui.ptlogin2.qq.com/cgi-bin/login?daid="\
-        "164&target=self&style=5&mibao_css=m_webqq&appid=1003903&"\
-        "enable_qlogin=0&no_verifyimg=1&s_url=http%3A%2F%2Fweb2.q"\
-        "q.com%2Floginproxy.html&f_url=loginerroralert&strong_log"\
-        "in=1&login_state=10&t=20130723001"
+    "164&target=self&style=5&mibao_css=m_webqq&appid=1003903&"\
+    "enable_qlogin=0&no_verifyimg=1&s_url=http%3A%2F%2Fweb2.q"\
+    "q.com%2Floginproxy.html&f_url=loginerroralert&strong_log"\
+    "in=1&login_state=10&t=20130723001"
 
 CHECK_U1 = "http://web2.qq.com/loginproxy.html"
 
@@ -26,3 +26,6 @@ S_ORIGIN = "http://s.web2.qq.com"
 
 D_REFERER = "https://d.web2.qq.com/cfproxy.html?v=20110331002&callback=1"
 D_ORIGIN = "http://d.web2.qq.com"
+
+DEFAULT_STYLE = {"name": "Monospace", "size": 10,
+                                     "style": [0, 0, 0], "color":"000000"}

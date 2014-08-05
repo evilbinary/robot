@@ -11,6 +11,7 @@ import json
 from tornadohttpclient import TornadoHTTPClient
 
 import config
+import random
 
 from plugins import BasePlugin
 
@@ -73,7 +74,7 @@ class SimSimiTalk(object):
                     data = json.loads(resp.body)
                 except ValueError:
                     pass
-            callback(data.get("response", "Server respond nothing!"))
+            callback(data.get("。。。。"))
 
         self.http.get(self.url, params, headers = headers,
                       callback = _talk)
@@ -87,8 +88,8 @@ class SimSimiPlugin(BasePlugin):
             return False
         else:
             self.simsimi = SimSimiTalk()
-
-        if type == "g":
+        
+        if type == "g" and random.choice('abcd')!='a':
             if self.nickname !=None:
                 if content.startswith(self.nickname.strip()) or \
                    content.endswith(self.nickname.strip()) or \

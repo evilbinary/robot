@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-  
 #
 #   Author  :   cold
 #   E-mail  :   wh_linux@126.com
@@ -49,7 +49,7 @@ class CommandPlugin(BasePlugin):
         return u"消息群关闭!!!"
     def is_match(self, from_uin, content, type):
         ABOUT_STR = u"\nAuthor    :   evilbinary小E\nE-mail    :   rootntsd@gmail.com\n"\
-                u"HomePage  :   http://blog.csdn.net/EvilBinary_root\n"\
+                u"HomePage  :   http://evilbinary.org\n"\
                 u"Project@  :   https://github.com/evilbinary"
         HELP_DOC = u"\n====命令列表====\n"\
         u"help         显示此信息\n"\
@@ -71,12 +71,13 @@ class CommandPlugin(BasePlugin):
         command_resp = {ping_cmd:u"小的在", about_cmd:ABOUT_STR,
                         help_cmd:HELP_DOC,
                         "uptime":self.uptime,msgoff_cmd:self.msgoff,msgon_cmd:self.msgon}
-
+       
         if content.encode("utf-8").strip().lower() in commands:
             body = command_resp[content.encode("utf-8").strip().lower()]
             if not isinstance(body, (str, unicode)):
                 body = body()
             self.body = body
+            print "True::::"
             return True
 
     def handle_message(self, callback):

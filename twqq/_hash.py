@@ -12,34 +12,34 @@
 源在这里: http://pidginlwqq.sinaapp.com/hash.js
 
 如果无法正常获取好友列表, 请查看上面js是否有更新, 有则更新本函数
-Update On: 2013-12-11
+Update On: 2014-06-15
 """
-def webqq_hash(b, i):
-    if isinstance(b, basestring):
-        b = int(b)
-    a = [0, 0, 0, 0]
-    for s in range(len(i)):
-        a[s % 4] ^= ord(i[s])
+# def webqq_hash(b, i):
+#     if isinstance(b, basestring):
+#         b = int(b)
+#     a = [0, 0, 0, 0]
+#     for s in range(len(i)):
+#         a[s % 4] ^= ord(i[s])
 
-    j = ["EC", "OK"]
-    d = range(4)
-    d[0] = b >> 24 & 255 ^ ord(j[0][0])
-    d[1] = b >> 16 & 255 ^ ord(j[0][1])
-    d[2] = b >> 8 & 255 ^ ord(j[1][0])
-    d[3] = b & 255 ^ ord(j[1][1])
+#     j = ["EC", "OK"]
+#     d = range(4)
+#     d[0] = b >> 24 & 255 ^ ord(j[0][0])
+#     d[1] = b >> 16 & 255 ^ ord(j[0][1])
+#     d[2] = b >> 8 & 255 ^ ord(j[1][0])
+#     d[3] = b & 255 ^ ord(j[1][1])
 
-    j = range(8)
-    for s in range(8):
-        j[s] = a[s>>1] if s % 2 == 0 else d[s>>1]
+#     j = range(8)
+#     for s in range(8):
+#         j[s] = a[s>>1] if s % 2 == 0 else d[s>>1]
 
-    a = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A",
-         "B", "C", "D", "E", "F"]
-    d = ""
-    for s in range(len(j)):
-        d += a[j[s] >> 4 & 15]
-        d += a[j[s] & 15]
+#     a = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A",
+#          "B", "C", "D", "E", "F"]
+#     d = ""
+#     for s in range(len(j)):
+#         d += a[j[s] >> 4 & 15]
+#         d += a[j[s] & 15]
 
-    return d
+#     return d
 
 
 # def webqq_hash(i, a):
@@ -96,3 +96,31 @@ def webqq_hash(b, i):
 #         e += j[r[c]&15]
 
 #     return e
+
+def webqq_hash(b, j):
+    b = str(b)
+    a = j + "password error"
+    i = ""
+    
+    while True:
+        if len(i) <= len(a):
+            i += b
+            if len(i) == len(a):
+                break
+        else:
+            i = i[:len(a)];
+            break
+        
+    E = [0] * len(i)
+    c = 0
+    while c < len(i):
+        E[c] = ord(i[c]) ^ ord(a[c])
+        c += 1
+    a = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
+    i = ""
+    c = 0
+    while c < len(E):
+        i += a[E[c] >> 4 & 15]
+        i += a[E[c] & 15]
+        c += 1
+    return i    
