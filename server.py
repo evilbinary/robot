@@ -143,9 +143,9 @@ app = Application([(r'/', CheckHandler), (r'/check', CImgHandler),
                    (r'/api/send', SendMessageHandler),
                    (r'/api/input', CheckHandler)
                    ])
-app.listen(HTTP_PORT, address = HTTP_LISTEN)
-
 
 def http_server_run(webqq):
+    print("listening %s:%s"%(HTTP_LISTEN, HTTP_PORT))
+    app.listen(HTTP_PORT, address = HTTP_LISTEN)
     BaseHandler.webqq = webqq
     webqq.run(BaseHandler)
